@@ -1,46 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import '../App.css';
-import axios from 'axios';
+import { connect } from 'react-redux';
 
-function App() {
-	const [pokemon, setPokemon] = useState([]);
+import DisplayPokemon from './DisplayPokemon';
+import PokeList from './PokeList';
 
-	useEffect(() => {
-		axios
-			// .get('https://api.open5e.com/monsters/')
-			.get('https://pokeapi.co/api/v2/pokemon/')
-			.then(res => {
-				console.log(res.data.results);
-				setPokemon(res.data.results);
-				// axios
-				// 	.get('https://www.dnd5eapi.co/api/monsters/aboleth')
-				// 	.then(res => {
-				// 		console.log(res.data);
-				// 	})
-				// 	.catch(err => {
-				// 		console.log(err);
-				// 	});
-			})
-			.catch(err => {
-				console.log(err);
-			});
-	}, []);
-
+const App = props => {
 	return (
 		<div className="App">
 			<h1>HELLO</h1>
-			{pokemon.map((poke, i) => {
+			<DisplayPokemon />
+			<PokeList />
+			{props.pokemon.pokemon.map((poke, i) => {
 				return (
 					<div key={Date.now() * i}>
 						<h2>{poke.name}</h2>
-						<a href={poke.url} alt={poke.name}>
-							See it here
-						</a>
+						<img
+							height="300px"
+							src={poke.sprites.other['official-artwork']['front_default']}
+							alt={poke.name}
+						/>
 					</div>
 				);
 			})}
 		</div>
 	);
-}
+};
 
-export default App;
+const mapStateToProps = state => {
+	return {
+		pokemon: state.pokemon
+	};
+};
+
+export default connect(mapStateToProps, {})(App);
