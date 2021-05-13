@@ -1,37 +1,27 @@
 import { FETCH_START, FETCH_SUCCESS, FETCH_FAIL } from '../actions/pokemonActions';
-import axios from 'axios';
-
-const initialPokeData = [];
-axios
-	.get('https://pokeapi.co/api/v2/pokemon/')
-	.then(res => {
-		// console.log('multi P data', res.data.results);
-		// setPokemon(res.data.results);
-		res.data.results.forEach(poke => {
-			axios
-				.get(`${poke.url}`)
-				.then(res => {
-					console.log('one P data', res.data.sprites.other['official-artwork']['front_default']);
-					initialPokeData.push(res.data);
-					// console.log('image: ', res.data.sprites['front_default']);
-				})
-				.catch(err => {
-					console.log(err);
-				});
-		});
-	})
-	.catch(err => {
-		console.log(err);
-	});
-
-console.log('initialPokeData: ', initialPokeData);
 
 const initialState = {
-	pokemon: initialPokeData,
-	isFetching: false
+	pokeOnDisplay: {
+		name: 'caterpie',
+		image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10.png',
+		sprites: {
+			other: {
+				'official-artwork': {
+					front_default:
+						'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10.png'
+				}
+			}
+		}
+	},
+	pokemon: [],
+	isFetching: false,
+	err: ''
 };
 
+// console.log('initialState: ', initialState);
+
 export const reducer = (state = initialState, action) => {
+	// console.log('action working: ', action.type);
 	switch (action.type) {
 		case FETCH_START:
 			return {
@@ -39,9 +29,10 @@ export const reducer = (state = initialState, action) => {
 				isFetching: true
 			};
 		case FETCH_SUCCESS:
+			// console.log(action.payload);
 			return {
 				...state,
-				pokemon: [state.pokemon, action.payload],
+				pokeOnDisplay: action.payload,
 				isFetching: false
 			};
 		case FETCH_FAIL:

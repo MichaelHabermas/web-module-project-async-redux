@@ -1,53 +1,37 @@
 import axios from 'axios';
+
 export const FETCH_START = 'FETCH_START';
 export const FETCH_SUCCESS = 'FETCH_SUCCESS';
 export const FETCH_FAIL = 'FETCH_FAIL';
 
-// useEffect(() => {
-// 	axios
-// 		.get('https://pokeapi.co/api/v2/pokemon/')
-// 		.then(res => {
-// 			// console.log('multi P data', res.data.results);
-// 			// setPokemon(res.data.results);
-// 			res.data.results.forEach(poke => {
-// 				axios
-// 					.get(`${poke.url}`)
-// 					.then(res => {
-// 						console.log('one P data', res.data);
-// 						setPokemon([...pokemon, res.data]);
-// 						// console.log('image: ', res.data.sprites['front_default']);
-// 					})
-// 					.catch(err => {
-// 						console.log(err);
-// 					});
-// 			});
-// 		})
-// 		.catch(err => {
-// 			console.log(err);
-// 		});
-// }, []);
-
-export const fetchPerson = () => {
+export const fetchPokemon = () => {
+	// console.log('fetchPokemon working: inside ');
 	return dispatch => {
+		// console.log('after first dispatch  working: ', dispatch);
 		dispatch({ type: FETCH_START });
 
 		dispatch(fetchStart());
 		axios
 			.get('https://pokeapi.co/api/v2/pokemon/')
 			.then(res => {
-				// console.log('multi P data', res.data.results);
-				// setPokemon(res.data.results);
-				res.data.results.forEach(poke => {
-					axios
-						.get(`${poke.url}`)
-						.then(res => {
-							// console.log('one P data', res.data);
-							dispatch({ type: FETCH_SUCCESS, payload: res.data });
-						})
-						.catch(err => {
-							dispatch({ type: FETCH_FAIL, payload: err });
-						});
-				});
+				// console.log(
+				// 	'1st axios working: ',
+				// 	res.data.results[Math.floor(Math.random() * res.data.results.length)].url
+				// );
+				// res.data.results.forEach(poke => {
+				axios
+					// .get(`${poke.url}`)
+					.get(`${res.data.results[Math.floor(Math.random() * res.data.results.length)].url}`)
+					.then(res => {
+						console.log('2nd axios working: ', res.data);
+						// console.log(res.data);
+						dispatch({ type: FETCH_SUCCESS, payload: res.data });
+					})
+					.catch(err => {
+						console.log(err);
+						dispatch({ type: FETCH_FAIL, payload: err });
+					});
+				// });
 			})
 			.catch(err => {
 				dispatch({ type: FETCH_FAIL, payload: err });
